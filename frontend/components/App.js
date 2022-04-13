@@ -10,7 +10,7 @@ export default class App extends React.Component {
     todos: [],
     error: '',
     todoNameInput: '',
-    displayCompleted: false,
+    displayCompleted: true,
   }
 
   fetchTodos = () => {
@@ -82,20 +82,14 @@ export default class App extends React.Component {
           toggleCompleted={this.toggleCompleted}
         />
         
-        <Form />
-        <form onSubmit={this.onTodoSubmit}>
-          <input 
-            value={this.state.todoNameInput}
-            onChange={this.onTodoNameChange}
-            type='text'
-            placeholder='type todo'
-          />
-          <input type='submit'/>
-        </form>
+        <Form 
+          onTodoSubmit={this.onTodoSubmit}
+          onTodoNameChange={this.onTodoNameChange}
+          toggleDisplayCompleted={this.toggleDisplayCompleted}
+          todoNameInput={this.state.todoNameInput}
+          displayCompleted={this.state.displayCompleted}
+        />
         
-        <button onClick={this.toggleDisplayCompleted}>
-          {this.displayCompleted ? 'Hide' : 'Show' } Completed
-        </button>
       </div>
     )
   }
