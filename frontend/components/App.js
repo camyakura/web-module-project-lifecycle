@@ -10,7 +10,7 @@ export default class App extends React.Component {
     todos: [],
     error: '',
     todoNameInput: '',
-    displayCompleted: true,
+    displayCompleted: false,
   }
 
   fetchTodos = () => {
@@ -23,8 +23,25 @@ export default class App extends React.Component {
       })
   }
 
-  componentDidMount() {
-    this.fetchTodos()
+  
+  toggleCompleted = id => () => {
+    axios.patch(`${URL}/${id}`)
+      .then(res => {
+        this.setState({...this.state, todos: this.state.todos.map(todo => {
+          if(todo.id !== id){
+            return todo
+          } else {
+            return res.data.data
+          }
+        })})
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  toggleDisplayCompleted = () => {
+    this.setState({...this.state, displayCompleted: !this.state.displayCompleted})
   }
 
   postNewTodo = () => {
@@ -48,6 +65,11 @@ export default class App extends React.Component {
     this.postNewTodo()
   }
 
+  componentDidMount() {
+    this.fetchTodos()
+  }
+
+
 
   render() {
     return (
@@ -57,9 +79,10 @@ export default class App extends React.Component {
         <TodoList 
           todos={this.state.todos}
           displayCompleted={this.state.displayCompleted}
-          
+          toggleCompleted={this.toggleCompleted}
         />
         
+        <Form />
         <form onSubmit={this.onTodoSubmit}>
           <input 
             value={this.state.todoNameInput}
@@ -70,7 +93,9 @@ export default class App extends React.Component {
           <input type='submit'/>
         </form>
         
-        <button>Hide Completed</button>
+        <button onClick={this.toggleDisplayCompleted}>
+          {this.displayCompleted ? 'Hide' : 'Show' } Completed
+        </button>
       </div>
     )
   }
